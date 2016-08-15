@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#7278e5">
 <link rel="stylesheet" href="./css/index.css" type="text/css" />
   <title>Admin</title>
+  <script src="cordova.js"></script>
   <script src="./js/angular.js"></script>
   <script src="./js/angular-ui-router.js"></script>
   <script src="./js/ng-file-upload-shim.js"></script>
@@ -88,7 +89,7 @@ app.controller('itemCtrl',function ($scope, $http, Upload) {
   $scope.get_item_data();
   });
   
-  app.controller('bestCtrl', function ($scope, $http) {
+  app.controller('qrCtrl', function ($scope, $http) {
     
         $scope.get_item_data = function() {
         $http.post(serverip+'/get_item_data').
@@ -103,7 +104,21 @@ app.controller('itemCtrl',function ($scope, $http, Upload) {
         })}
     $scope.get_item_data();
   })
-  
+   app.controller('orderCtrl', function ($scope, $http) {
+    
+        $scope.get_item_data = function() {
+        $http.post(serverip+'/get_item_data').
+        success(function(data) {
+          $scope.ip=serverip;
+            $scope.items=data;
+        })}
+        $scope.delete_item = function() {
+        $http.post(serverip+'/get_item_data').
+        success(function(data) {
+            $scope.items=data;
+        })}
+    $scope.get_item_data();
+  })
 app.config([
 '$stateProvider',
 '$urlRouterProvider',
@@ -128,12 +143,18 @@ function($stateProvider, $urlRouterProvider) {
       ,controller: 'pageCtrl'
     });
     $stateProvider
-    .state('best', {
-      url: '/best',
-      templateUrl: '/best.html'
-      ,controller: 'bestCtrl'
+    .state('order', {
+      url: '/order',
+      templateUrl: '/order.html'
+      ,controller: 'orderCtrl'
     });
-  
+    $stateProvider
+    .state('qr', {
+      url: '/qr',
+      templateUrl: '/qr.html'
+      ,controller: 'qrCtrl'
+    });
+
   $urlRouterProvider.otherwise('home');
 }]);
     </script>
@@ -159,8 +180,8 @@ function($stateProvider, $urlRouterProvider) {
 
     <div style="background: #6ab1c9;" class="men"><a href="#/page" onclick="document.getElementById('test').checked = false">Page 관리</a></div>
     <div style="background:#78c98d;" class="men"><a href="#/item" onclick="document.getElementById('test').checked = false">Item 관리</a></div>
-    <div style="background:#e5d272;" class="men"><a href="#/best" onclick="document.getElementById('test').checked = false">주문 현황</a></div>
-    <div style="background:#DFE863;" class="men"><a href="#/best" onclick="document.getElementById('test').checked = false">QR 코드</a></div>
+    <div style="background:#e5d272;" class="men"><a href="#/order" onclick="document.getElementById('test').checked = false">주문 현황</a></div>
+    <div style="background:#DFE863;" class="men"><a href="#/qr" onclick="document.getElementById('test').checked = false">QR 코드</a></div>
 </div>
 
 <body ng-app="flapperNews">
@@ -187,12 +208,12 @@ function($stateProvider, $urlRouterProvider) {
   </div>
   <div class="btn-bg bg-1" style="background:#e5d272;">
     <div class="btn btn-1">
-      <a href="#/best"><button>주문 현황</button></a>
+      <a href="#/order"><button>주문 현황</button></a>
     </div>
   </div>
 <div class="btn-bg bg-1" style="background:#DFE863;">
     <div class="btn btn-1">
-      <a href="#/best"><button>QR 코드</button></a>
+      <a href="#/qr"><button>QR 코드</button></a>
     </div>
   </div>
 </div>
@@ -259,6 +280,82 @@ function($stateProvider, $urlRouterProvider) {
           이미지 : <img height="250" width="250" src="{{ip+item.img_dir}}"><br>
 					<button ng-click="delete_item($index)">제품 삭제</button><br>
         </div>
+      </div>
+  </div>
+  </div>
+</script>
+<script type="text/ng-template" id="/order.html">
+  <div class="page-header">
+    <div class="btn-bg"  style="background:#7278e5;">
+      <h1 style="text-align:center;color:white">Item 관리</h1>
+        
+
+        <form method="post" name="form" ng-submit="submit_form()">
+    제품 이름 <input type="text" name="item_name" ng-model="item_name"><br>
+    제품 가격 <input type="number" name="item_price" ng-model="item_price"><br>
+    좋아요 수 <input type="number" name="like" ng-model="like"><br>
+    이미지 업로드 
+    <button class="button" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
+    ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100" 
+    ngf-resize="{width: 100, height: 100}">업로드</button>
+    <br>
+        <input type="submit" ng-click="submit()">
+        </form>
+
+
+      </div>
+    <div ng-repeat="item in items">
+      <div class="btn-bg bg-1" style="height:450px">
+        <div class="btn btn-1">
+          <h2>제품명 : {{item.item_name}}</h2>
+          가격 : {{item.item_price}}<br>
+          좋아요 : {{item.like}}<br>
+          할인 : {{item_discount}} 할인가 : {{item.discount_price}}<br>
+          이미지 : <img height="250" width="250" src="{{ip+item.img_dir}}"><br>
+          <button ng-click="delete_item($index)">제품 삭제</button><br>
+        </div>
+      </div>
+  </div>
+  </div>
+</script>
+<script>
+  function scan()
+{
+    cordova.plugins.barcodeScanner.scan(
+        function (result) {
+            if(!result.cancelled)
+            {
+                if(result.format == "QR_CODE")
+                {
+                    navigator.notification.prompt("Please enter name of data",  function(input){
+                        var name = input.input1;
+                        var value = result.text;
+
+                        var data = localStorage.getItem("LocalData");
+                        console.log(data);
+                        data = JSON.parse(data);
+                        data[data.length] = [name, value];
+
+                        localStorage.setItem("LocalData", JSON.stringify(data));
+
+                        alert("Done");
+                    });
+                }
+            }
+        },
+        function (error) {
+            alert("Scanning failed: " + error);
+        }
+   );
+}
+</script>
+<script type="text/ng-template" id="/qr.html">
+  <div class="page-header">
+    <div class="btn-bg"  style="background:#7278e5;">
+      <h1 style="text-align:center;color:white">QR 코드</h1>
+      <div class="btn-bg bg-1" style="height:87.5vh">
+      <a target="_blank" href="javascript:scan();" style="text-decoration: none"><button>Scan</button></a>
+            <a target="_blank" href="#display" style="text-decoration: none"><button>Display Scanned Data</button></a>
       </div>
   </div>
   </div>
