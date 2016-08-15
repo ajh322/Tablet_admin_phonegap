@@ -23,12 +23,7 @@ app.controller('MainCtrl',
 
 app.controller('itemCtrl',function ($scope, $http, Upload) {
   $scope.submit = function()
-  {
-      /*$http.post(serverip+'/make_item',({item_name:$scope.form.item_name,item_price:$scope.form.item_price})).
-        success(function(data) {
-          $scope.blogPosts[name].like=parseInt(data);
-        })*/
-        
+  {     
       Upload.upload({
           url: serverip+'/make_item',
           data: {file:$scope.file,item_name:$scope.item_name,item_price:$scope.item_price,like:$scope.like}
@@ -56,7 +51,20 @@ app.controller('itemCtrl',function ($scope, $http, Upload) {
 
 
 
-  app.controller('pageCtrl', function ($scope, $http) {
+  app.controller('pageCtrl', function ($scope, $http, Upload) {
+    $scope.submit = function()
+  {     
+    console.log($scope.testable+""+$scope.todayable+""+$scope.bestable)
+      Upload.upload({
+          url: serverip+'/make_page',
+          data: {file:$scope.file,item_name:$scope.item_name,page_info:$scope.page_info,testable:$scope.testable,todayable:$scope.todayable,bestable:$scope.bestable}
+      }).then(function (data) {
+          console.log(data);
+          $scope.ip=serverip;
+      $scope.get_page_data();
+      });
+
+    };
     $scope.get_item_data = function() {
         $http.post(serverip+'/get_item_data').
         success(function(data) {
@@ -195,14 +203,16 @@ function($stateProvider, $urlRouterProvider) {
   <div class="page-header">
   <div class="btn-bg"  style="background:#7278e5;">
   <h1 style="text-align:center;color:white">Page 관리</h1>
-<form action ="http://52.78.68.136/make_page", method="post" enctype="multipart/form-data" name="make_page">
-    제품 이름 <select name="item_name"><option ng-repeat="item in items" value="{{item.item_name}}">{{item.item_name}}</option></select><br>
-    페이지 정보 <input type="text" name="page_info" placeholder="제품 홍보"><br>
-    이미지 업로드 <input type="file" name="uploadFile" /><br>
-    메인 페이지 <input type="checkbox" checked name="testable">
-    오늘의 메뉴 <input type="checkbox" checked name="todayable">
-    베스트 메뉴 <input type="checkbox" checked name="bestable"><br>
-        <input type=submit>
+<form method="post" name="make_page">
+    제품 이름 <select ng-model="item_name"><option ng-repeat="item in items" value="{{item.item_name}}">{{item.item_name}}</option></select><br>
+    페이지 정보 <input type="text" ng-model="page_info" placeholder="제품 홍보"><br>
+    이미지 업로드 <button class="button" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
+    ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100" 
+    ngf-resize="{width: 100, height: 100}">업로드</button><br>
+    메인 페이지 <input type="checkbox" checked ng-model="testable">
+    오늘의 메뉴 <input type="checkbox" checked ng-model="todayable">
+    베스트 메뉴 <input type="checkbox" checked ng-model="bestable"><br>
+        <input type="submit" ng-click="submit()">
 </form>
   </div>
     <div ng-repeat="page in pages">

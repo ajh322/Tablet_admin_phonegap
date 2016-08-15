@@ -172,7 +172,6 @@ function($stateProvider, $urlRouterProvider) {
   
   
 <script type="text/ng-template" id="/home.html">
-<div class="page-header">
 <div class="btn-bg head" style="background:#7278e5;">
 <h1 style="text-align:center;color:white">관리자 페이지</h1>
 </div>
@@ -191,7 +190,6 @@ function($stateProvider, $urlRouterProvider) {
       <a href="#/best"><button>주문 현황</button></a>
     </div>
   </div>
-</div>
 <div class="btn-bg bg-1" style="background:#DFE863;">
     <div class="btn btn-1">
       <a href="#/best"><button>QR 코드</button></a>
@@ -216,7 +214,7 @@ function($stateProvider, $urlRouterProvider) {
 </form>
   </div>
     <div ng-repeat="page in pages">
-      <div class="btn-bg bg-1" style="height:380px">
+      <div class="btn-bg bg-1" style="height:63vh">
         <div class="btn btn-1">
           <h2>{{page.page_info}}</h2>
 					제품명 : {{page.item_name}}<br>
