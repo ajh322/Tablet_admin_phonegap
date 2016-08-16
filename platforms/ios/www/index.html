@@ -14,9 +14,9 @@
   <script src="./js/ng-file-upload.js"></script>
     <script>
     var serverip = "http://52.78.68.136";
-    
+
     var app = angular.module('flapperNews', ["ui.router",'ngFileUpload'])
-     
+
 
 app.controller('MainCtrl',
   function($scope) {
@@ -24,7 +24,7 @@ app.controller('MainCtrl',
 
 app.controller('itemCtrl',function ($scope, $http, Upload) {
   $scope.submit = function()
-  {     
+  {
       Upload.upload({
           url: serverip+'/make_item',
           data: {file:$scope.file,item_name:$scope.item_name,item_price:$scope.item_price,like:$scope.like}
@@ -33,7 +33,7 @@ app.controller('itemCtrl',function ($scope, $http, Upload) {
       });
       $scope.get_item_data();
     };
-  
+
            $scope.get_item_data = function() {
         $http.post(serverip+'/get_item_data').
         success(function(data) {
@@ -54,7 +54,7 @@ app.controller('itemCtrl',function ($scope, $http, Upload) {
 
   app.controller('pageCtrl', function ($scope, $http, Upload) {
     $scope.submit = function()
-  {     
+  {
     console.log($scope.testable+""+$scope.todayable+""+$scope.bestable)
       Upload.upload({
           url: serverip+'/make_page',
@@ -84,13 +84,13 @@ app.controller('itemCtrl',function ($scope, $http, Upload) {
         success(function(data) {
           $scope.get_page_data();
         })};
-      
+
     $scope.get_page_data();
   $scope.get_item_data();
   });
-  
+
   app.controller('qrCtrl', function ($scope, $http) {
-    
+
         $scope.get_item_data = function() {
         $http.post(serverip+'/get_item_data').
         success(function(data) {
@@ -105,7 +105,7 @@ app.controller('itemCtrl',function ($scope, $http, Upload) {
     $scope.get_item_data();
   })
    app.controller('orderCtrl', function ($scope, $http) {
-    
+
         $scope.get_item_data = function() {
         $http.post(serverip+'/get_item_data').
         success(function(data) {
@@ -129,7 +129,7 @@ function($stateProvider, $urlRouterProvider) {
       templateUrl: '/home.html'
       ,controller: 'MainCtrl'
     });
-    
+
     $stateProvider
     .state('item', {
       url: '/item',
@@ -161,14 +161,14 @@ function($stateProvider, $urlRouterProvider) {
 <input id="test" type="checkbox" />
 <label for="test">
     <svg class="burger" width="86" height="60" viewbox="0 0 150 150">
-        <g stroke-width="12">   
+        <g stroke-width="12">
             <line x1="6" y1="6" x2="80" y2="6"></line>
             <line x1="6" y1="28" x2="80" y2="28"></line>
             <line x1="6" y1="50" x2="80" y2="50"> </line>
         </g>
     </svg>
     <svg class="close" width="86" height="60" viewbox="0 0 150 150">
-        <g stroke-width="12">   
+        <g stroke-width="12">
             <line x1="42" y1="6" x2="42" y2="80"></line>
             <line x1="6" y1="42" x2="80" y2="42"></line>
         </g>
@@ -180,8 +180,8 @@ function($stateProvider, $urlRouterProvider) {
 
     <div style="background: #6ab1c9;" class="men"><a href="#/page" onclick="document.getElementById('test').checked = false">Page 관리</a></div>
     <div style="background:#78c98d;" class="men"><a href="#/item" onclick="document.getElementById('test').checked = false">Item 관리</a></div>
-    <div style="background:#e5d272;" class="men"><a href="#/order" onclick="document.getElementById('test').checked = false">주문 현황</a></div>
-    <div style="background:#DFE863;" class="men"><a href="#/qr" onclick="document.getElementById('test').checked = false">QR 코드</a></div>
+    <div style="background:#ffc107;" class="men"><a href="#/order" onclick="document.getElementById('test').checked = false">주문 현황</a></div>
+    <div style="background:#e91e63;" class="men"><a href="#/qr" onclick="document.getElementById('test').checked = false">QR 코드</a></div>
 </div>
 
 <body ng-app="flapperNews">
@@ -190,8 +190,8 @@ function($stateProvider, $urlRouterProvider) {
       <ui-view></ui-view>
     </div>
   </div>
-  
-  
+
+
 <script type="text/ng-template" id="/home.html">
 <div class="btn-bg head" style="background:#7278e5;">
 <h1 style="text-align:center;color:white">관리자 페이지</h1>
@@ -206,12 +206,12 @@ function($stateProvider, $urlRouterProvider) {
       <a href="#/item"><button>Item 관리</button></a>
     </div>
   </div>
-  <div class="btn-bg bg-1" style="background:#e5d272;">
+  <div class="btn-bg bg-1" style="background:#ffc107;">
     <div class="btn btn-1">
       <a href="#/order"><button>주문 현황</button></a>
     </div>
   </div>
-<div class="btn-bg bg-1" style="background:#DFE863;">
+<div class="btn-bg bg-1" style="background:#e91e63;">
     <div class="btn btn-1">
       <a href="#/qr"><button>QR 코드</button></a>
     </div>
@@ -220,13 +220,13 @@ function($stateProvider, $urlRouterProvider) {
 </script>
 <script type="text/ng-template" id="/page.html">
   <div class="page-header">
-  <div class="btn-bg"  style="background:#7278e5;">
+  <div class="btn-bg"  style="background:#03a9f4;">
   <h1 style="text-align:center;color:white">Page 관리</h1>
 <form method="post" name="make_page">
     제품 이름 <select ng-model="item_name"><option ng-repeat="item in items" value="{{item.item_name}}">{{item.item_name}}</option></select><br>
     페이지 정보 <input type="text" ng-model="page_info" placeholder="제품 홍보"><br>
     이미지 업로드 <button class="button" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
-    ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100" 
+    ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100"
     ngf-resize="{width: 100, height: 100}">업로드</button><br>
     메인 페이지 <input type="checkbox" checked ng-model="testable">
     오늘의 메뉴 <input type="checkbox" checked ng-model="todayable">
@@ -252,26 +252,26 @@ function($stateProvider, $urlRouterProvider) {
 </script>
 <script type="text/ng-template" id="/item.html">
   <div class="page-header">
-    <div class="btn-bg"  style="background:#7278e5;">
+    <div class="btn-bg"  style="background:#44673f;">
       <h1 style="text-align:center;color:white">Item 관리</h1>
-        
+
 
         <form method="post" name="form" ng-submit="submit_form()">
     제품 이름 <input type="text" name="item_name" ng-model="item_name"><br>
     제품 가격 <input type="number" name="item_price" ng-model="item_price"><br>
     좋아요 수 <input type="number" name="like" ng-model="like"><br>
-    이미지 업로드 
+    이미지 업로드
     <button class="button" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
-    ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100" 
+    ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100"
     ngf-resize="{width: 100, height: 100}">업로드</button>
     <br>
         <input type="submit" ng-click="submit()">
         </form>
 
 
-      </div>
+    </div>
     <div ng-repeat="item in items">
-      <div class="btn-bg bg-1" style="height:450px">
+      <div class="btn-bg bg-1" style="height:450px;background-color:#78c98d">
         <div class="btn btn-1">
 					<h2>제품명 : {{item.item_name}}</h2>
 					가격 : {{item.item_price}}<br>
@@ -286,36 +286,22 @@ function($stateProvider, $urlRouterProvider) {
 </script>
 <script type="text/ng-template" id="/order.html">
   <div class="page-header">
-    <div class="btn-bg"  style="background:#7278e5;">
-      <h1 style="text-align:center;color:white">Item 관리</h1>
-        
-
-        <form method="post" name="form" ng-submit="submit_form()">
-    제품 이름 <input type="text" name="item_name" ng-model="item_name"><br>
-    제품 가격 <input type="number" name="item_price" ng-model="item_price"><br>
-    좋아요 수 <input type="number" name="like" ng-model="like"><br>
-    이미지 업로드 
-    <button class="button" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
-    ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100" 
-    ngf-resize="{width: 100, height: 100}">업로드</button>
-    <br>
-        <input type="submit" ng-click="submit()">
-        </form>
-
-
-      </div>
+    <div class="btn-bg"  style="background:#ff9800;">
+      <h1 style="text-align:center;">주문현황</h1>
+      <button>과거 주문 보기</button> <a href="javascript:scan();"><button style="padding:initial;font-size:initial;letter-spacing:initial;margin:10px">QR 코드 스캔</button></a>
+    </div>
     <div ng-repeat="item in items">
-      <div class="btn-bg bg-1" style="height:450px">
-        <div class="btn btn-1">
-          <h2>제품명 : {{item.item_name}}</h2>
-          가격 : {{item.item_price}}<br>
-          좋아요 : {{item.like}}<br>
-          할인 : {{item_discount}} 할인가 : {{item.discount_price}}<br>
-          이미지 : <img height="250" width="250" src="{{ip+item.img_dir}}"><br>
-          <button ng-click="delete_item($index)">제품 삭제</button><br>
-        </div>
+      <div class="btn-bg bg-1" style="background-color:#ffc107;flex-direction: initial;height:150px">
+        <img height="250" width="250" src="{{ip+item.img_dir}}" style="float:left;width: 100px;height: 100px;margin:10px">
+        <a class="btn-1">
+          제품명 : {{item.item_name}}<br>
+          결제 가격 : {{item.item_price}}<br>
+          위치 : {{item.like}}<br>
+          경과 시간:  <br>
+          <div><button ng-click="submit_item($index)">주문 완료</button><button ng-click="delete_item($index)">주문 취소</button></div>
+        </a>
       </div>
-  </div>
+    </div>
   </div>
 </script>
 <script>
@@ -351,11 +337,11 @@ function($stateProvider, $urlRouterProvider) {
 </script>
 <script type="text/ng-template" id="/qr.html">
   <div class="page-header">
-    <div class="btn-bg"  style="background:#7278e5;">
+    <div class="btn-bg"  style="background:#c31e57;">
       <h1 style="text-align:center;color:white">QR 코드</h1>
-      <div class="btn-bg bg-1" style="height:87.5vh">
-      <a target="_blank" href="javascript:scan();" style="text-decoration: none"><button>Scan</button></a>
-            <a target="_blank" href="#display" style="text-decoration: none"><button>Display Scanned Data</button></a>
+      <div class="btn-bg bg-1" style="height:87.5vh;background-color:#e91e63">
+      <a class="btn btn-1" target="_blank" href="javascript:scan();" style="text-decoration: none"><button>Scan</button></a>
+      <a class="btn btn-1" target="_blank" href="#display" style="text-decoration: none"><button>Display Scanned Data</button></a>
       </div>
   </div>
   </div>
